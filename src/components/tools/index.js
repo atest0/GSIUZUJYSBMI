@@ -7,21 +7,18 @@ import OptionItem from './optionItem';
 
 const arrayBigClass = [
     {
+        name: '场景',
+        mainIcon: 'changjing.png',
+        dirName: 'changjing',
+        totalIcons: 5,
+        type: 'Scene',
+    },
+    {
         name: '选人',
         mainIcon: 'xuanren.png',
         dirName: 'sex',
         totalIcons: 2,
         type: 'Role',
-    },
-    {
-        name: '服装',
-        mainIcon: 'yifu.png',
-        dirName: 'yifu',
-        sex: {
-            male: 6,
-            famale: 6
-        },
-        type: 'Cloth',
     },
     {
         name: '角度',
@@ -32,6 +29,16 @@ const arrayBigClass = [
             famale: 3
         },
         type: 'FacingTo',
+    },
+    {
+        name: '服装',
+        mainIcon: 'yifu.png',
+        dirName: 'yifu',
+        sex: {
+            male: 6,
+            famale: 6
+        },
+        type: 'Cloth',
     },
     {
         name: '发型',
@@ -54,25 +61,18 @@ const arrayBigClass = [
         type: 'Face',
     },
     {
+        name: '道具',
+        mainIcon: 'qita.png',
+        dirName: 'daoju',
+        totalIcons: 42,
+        type: 'Goods',
+    },
+    {
         name: '特效',
         mainIcon: 'texiao.png',
         dirName: 'texiao',
         totalIcons: 3,
         type: 'Effect',
-    },
-    {
-        name: '场景',
-        mainIcon: 'changjing.png',
-        dirName: 'changjing',
-        totalIcons: 5,
-        type: 'Scene',
-    },
-    {
-        name: '其他',
-        mainIcon: 'qita.png',
-        dirName: 'daoju',
-        totalIcons: 41,
-        type: 'Goods',
     }
 ];
 class App extends Component {
@@ -93,19 +93,15 @@ class App extends Component {
 	};
 
 	clickBigClassIndex = index => {
-		this.categoryContainer.scrollLeft = index > 3 ? 100 : 0;
 		this.setState({
 			showSubOptions: true,
 			categoryIndex: index,
 			currentSubOptionIndex: null
 		});
-		window.HollywoodLog && window.HollywoodLog.click('canvasIcon.click', '画布页.分类' + arrayBigClass[index].name, '');
+		window.HollywoodLog && window.HollywoodLog.click('canvasIcon.click', '画布页Icon.点击', arrayBigClass[index].name);
 	};
 
 	clickSubOptionItemHandler = (index, element) => {
-		const offsetLeft = element.offsetWidth / 2 + element.offsetLeft - this.WIDTH / 2;
-		// this.node.style.transform = `translateX(-${element.offsetWidth / 2 + element.offsetLeft - this.WIDTH / 2}px)`;
-		this.node.scrollLeft = offsetLeft;
 		this.setState({
 			currentSubOptionIndex: index
 		});
@@ -113,6 +109,11 @@ class App extends Component {
 		if (arrayBigClass[this.state.categoryIndex].dirName && arrayBigClass[this.state.categoryIndex].dirName === 'sex') {
 			this.setState({
 				sex: index ? 'famale' : 'male'
+			});
+		}
+		if (arrayBigClass[this.state.categoryIndex].dirName && arrayBigClass[this.state.categoryIndex].dirName === 'changjing') {
+			this.setState({
+				changjing: index
 			});
 		}
 		const type = arrayBigClass[this.state.categoryIndex].type;
@@ -126,12 +127,28 @@ class App extends Component {
 	generateHandler = (event) => {
 		event.preventDefault();
 		event.stopPropagation();
-		this.props.onClickGenerateHandler && this.props.onClickGenerateHandler();
+		this.props.onClickGenerateHandler && this.props.onClickGenerateHandler(this.state.changjing || 0);
 	};
 
 	componentDidMount() {
 		this.WIDTH = this.node.offsetWidth;
+		window.addEventListener('roleFocus', this.handlerClickRole);
 	}
+
+	componentWillUnmount() {
+		window.removeEventListener('roleFocus', this.handlerClickRole);
+	}
+
+	handlerClickRole = (event) => {
+		try {
+			const sex = event.detail.sex
+			this.setState({
+				sex: sex ? 'famale' : 'male'
+			});
+		} catch(e) {
+			console.log(e);
+		}
+	};
 	render() {
 		const category = arrayBigClass[this.state.categoryIndex];
 		const isClassBySex = !!category.sex;

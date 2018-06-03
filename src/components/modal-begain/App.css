@@ -44,10 +44,6 @@
   margin: 21px auto 40px;
   border: 3px solid rgba(255,255, 255, 0.5);
   position: relative;
-  background-image: url(../../images/others/sprite-animate.png);
-  background-repeat: no-repeat;
-  background-size: 191px auto;
-  background-position: center;
 }
 .xlt img{
   width: 100%;
